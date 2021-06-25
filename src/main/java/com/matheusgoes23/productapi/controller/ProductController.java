@@ -1,5 +1,7 @@
 package com.matheusgoes23.productapi.controller;
 
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import com.matheusgoes23.productapi.model.Product;
 import com.matheusgoes23.productapi.service.serviceImpl.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
 public class ProductController {
@@ -25,6 +29,10 @@ public class ProductController {
         if (productList.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
+            for (Product product: productList){
+                long id = product.getId();
+                product.add(linkTo(methodOn(ProductController.class).getOneProduct(id)).withSelfRel());
+            }
             return new ResponseEntity<List<Product>>(productList, HttpStatus.OK);
         }
     }
@@ -37,12 +45,14 @@ public class ProductController {
         if (!productOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
+            productOptional.get().add(linkTo(methodOn(ProductController.class).getAllProducts()).withRel("Product List"));
             return new ResponseEntity<Product>(productOptional.get(), HttpStatus.OK);
         }
     }
 
     @PostMapping("/products")
     public ResponseEntity<Product> saveProduct(@RequestBody @Valid Product product) {
+        product.add(linkTo(methodOn(ProductController.class).getAllProducts()).withRel("Product List"));
         return new ResponseEntity<Product>(productService.save(product), HttpStatus.CREATED);
     }
 
@@ -68,6 +78,7 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             product.setId(productOptional.get().getId());
+            productOptional.get().add(linkTo(methodOn(ProductController.class).getAllProducts()).withRel("Product List"));
             return new ResponseEntity<Product>(productService.save(product), HttpStatus.OK);
         }
     }
