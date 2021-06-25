@@ -1,7 +1,7 @@
 package com.matheusgoes23.productapi.controller;
 
 import com.matheusgoes23.productapi.model.Product;
-import com.matheusgoes23.productapi.repository.ProductRepository;
+import com.matheusgoes23.productapi.service.serviceImpl.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +15,12 @@ import java.util.Optional;
 public class ProductController {
 
     @Autowired
-    ProductRepository productRepository;
+    ProductServiceImpl productService;
 
     @GetMapping("/products")
     ResponseEntity<List<Product>> getAllProducts() {
 
-        List<Product> productList = productRepository.findAll();
+        List<Product> productList = productService.findAll();
 
         if (productList.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -32,7 +32,7 @@ public class ProductController {
     @GetMapping("/products/{id}")
     ResponseEntity<Product> getOneProduct(@PathVariable(value = "id") long id) {
 
-        Optional<Product> productOptional = productRepository.findById(id);
+        Optional<Product> productOptional = productService.findById(id);
 
         if (!productOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -43,6 +43,6 @@ public class ProductController {
 
     @PostMapping("/products")
     public ResponseEntity<Product> saveProduct(@RequestBody @Valid Product product) {
-        return new ResponseEntity<Product>(productRepository.save(product), HttpStatus.CREATED);
+        return new ResponseEntity<Product>(productService.save(product), HttpStatus.CREATED);
     }
 }
