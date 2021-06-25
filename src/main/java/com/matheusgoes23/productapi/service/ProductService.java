@@ -12,4 +12,6 @@ public interface ProductService {
     Optional<Product> findById(long id);
 
     Product save(Product product);
+
+    void delete(Product product);
 }
