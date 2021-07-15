@@ -56,12 +56,12 @@ public class ProductController {
 
     @ApiOperation(value = "Update a Product")
     @PutMapping("/products/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable(value = "id") long id, @Valid @RequestBody Product product) {
+    public ResponseEntity<Product> updateProduct(@PathVariable(value = "id") Long id, @Valid @RequestBody Product product) {
 
-        product = productService.update(id, product);
-        product.add(linkTo(methodOn(ProductServiceImpl.class).findAll()).withRel("Product List"));
+        Product productOne = productService.update(id, product);
+        productOne.add(linkTo(methodOn(ProductController.class).getAllProducts()).withRel("Product List"));
 
-        return new ResponseEntity<Product>(product, HttpStatus.OK);
+        return new ResponseEntity<Product>(productOne, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Delete a Product")
