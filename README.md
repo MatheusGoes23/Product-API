@@ -1,6 +1,6 @@
-<h2>Developing a API REST product management system with Spring Boot</h2>
+<h2>Developing a REST API product management system with Spring Boot</h2>
 
-In this project, a small system for managing product in a company through a API REST, created with Spring Boot, will be developed.
+In this project, a small system for managing product in a company through a REST API, created with Spring Boot, will be developed.
 
 During the project, the following topics will be developed and addressed:
 
@@ -26,14 +26,14 @@ http://localhost:8080/api/products
 To open the documentation (available through Swagger 2) of all operations implemented with the REST architectural pattern, access the following link below:
 
 ```
-http://localhost:8080/api/v1/books/swagger-ui.html
+http://localhost:8080/swagger-ui.html
 ```
 
 
 The link to the documentation on Heroku, also implemented through Swagger, is at the link below:
 
 ```
-https://bookapi-course.herokuapp.com/swagger-ui.html
+https://products-api-matheus.herokuapp.com/swagger-ui.html
 ```
 
 The following prerequisites are necessary for the creation of the same developed project:

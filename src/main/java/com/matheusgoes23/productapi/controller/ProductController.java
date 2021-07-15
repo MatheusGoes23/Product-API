@@ -18,7 +18,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/api")
-@Api(value = "API REST Products")
+@Api(value = "REST API Products")
 public class ProductController {
 
     @Autowired
@@ -58,10 +58,10 @@ public class ProductController {
     @PutMapping("/products/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable(value = "id") Long id, @Valid @RequestBody Product product) {
 
-        Product productOne = productService.update(id, product);
-        productOne.add(linkTo(methodOn(ProductController.class).getAllProducts()).withRel("Product List"));
+        Product productUpdated = productService.update(id, product);
+        productUpdated.add(linkTo(methodOn(ProductController.class).getAllProducts()).withRel("Product List"));
 
-        return new ResponseEntity<Product>(productOne, HttpStatus.OK);
+        return new ResponseEntity<Product>(productUpdated, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Delete a Product")
