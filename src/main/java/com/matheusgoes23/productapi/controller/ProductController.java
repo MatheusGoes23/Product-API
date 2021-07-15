@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -30,65 +29,45 @@ public class ProductController {
     ResponseEntity<List<Product>> getAllProducts() {
 
         List<Product> productList = productService.findAll();
-
-        if (productList.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            for (Product product : productList) {
-                long id = product.getId();
-                product.add(linkTo(methodOn(ProductController.class).getOneProduct(id)).withSelfRel());
-            }
-            return new ResponseEntity<List<Product>>(productList, HttpStatus.OK);
+        for (Product product : productList) {
+            long id = product.getId();
+            product.add(linkTo(methodOn(ProductController.class).getOneProduct(id)).withSelfRel());
         }
+
+        return new ResponseEntity<List<Product>>(productList, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Returns a single Product")
     @GetMapping("/products/{id}")
-    ResponseEntity<Product> getOneProduct(@PathVariable(value = "id") long id) {
+    ResponseEntity<Product> getOneProduct(@PathVariable(value = "id") Long id) {
 
-        Optional<Product> productOptional = productService.findById(id);
+        Product product = productService.findById(id);
+        product.add(linkTo(methodOn(ProductController.class).getAllProducts()).withRel("Product List"));
 
-        if (!productOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            productOptional.get().add(linkTo(methodOn(ProductController.class).getAllProducts()).withRel("Product List"));
-            return new ResponseEntity<Product>(productOptional.get(), HttpStatus.OK);
-        }
+        return new ResponseEntity<Product>(product, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Save a Product")
     @PostMapping("/products")
-    public ResponseEntity<Product> saveProduct(@RequestBody @Valid Product product) {
+    public ResponseEntity<Product> saveProduct(@Valid @RequestBody Product product) {
         product.add(linkTo(methodOn(ProductController.class).getAllProducts()).withRel("Product List"));
         return new ResponseEntity<Product>(productService.save(product), HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "Delete a Product")
-    @DeleteMapping("/products/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable(value = "id") long id) {
-
-        Optional<Product> productOptional = productService.findById(id);
-
-        if (!productOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            productService.delete(productOptional.get());
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-    }
-
     @ApiOperation(value = "Update a Product")
     @PutMapping("/products/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable(value = "id") long id, @RequestBody @Valid Product product) {
+    public ResponseEntity<Product> updateProduct(@PathVariable(value = "id") long id, @Valid @RequestBody Product product) {
 
-        Optional<Product> productOptional = productService.findById(id);
+        product = productService.update(id, product);
+        product.add(linkTo(methodOn(ProductServiceImpl.class).findAll()).withRel("Product List"));
 
-        if (!productOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            product.setId(productOptional.get().getId());
-            productOptional.get().add(linkTo(methodOn(ProductController.class).getAllProducts()).withRel("Product List"));
-            return new ResponseEntity<Product>(productService.save(product), HttpStatus.OK);
-        }
+        return new ResponseEntity<Product>(product, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Delete a Product")
+    @DeleteMapping("/products/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable(value = "id") Long id) {
+        productService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

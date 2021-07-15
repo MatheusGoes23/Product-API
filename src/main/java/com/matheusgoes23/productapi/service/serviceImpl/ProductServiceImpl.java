@@ -1,5 +1,6 @@
 package com.matheusgoes23.productapi.service.serviceImpl;
 
+import com.matheusgoes23.productapi.exception.ProductNotFoundException;
 import com.matheusgoes23.productapi.model.Product;
 import com.matheusgoes23.productapi.repository.ProductRepository;
 import com.matheusgoes23.productapi.service.ProductService;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -17,12 +19,26 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> findAll() {
-        return productRepository.findAll();
+
+        List<Product> productList = productRepository.findAll();
+
+        if (productList.isEmpty()) {
+            throw new ProductNotFoundException();
+        } else {
+            return productList;
+        }
     }
 
     @Override
-    public Optional<Product> findById(long id) {
-        return Optional.of(productRepository.findById(id).get());
+    public Product findById(Long id) {
+
+        Optional<Product> productOptional = productRepository.findById(id);
+
+        if (productOptional.isPresent()) {
+            return productOptional.get();
+        } else {
+            throw new ProductNotFoundException();
+        }
     }
 
     @Override
@@ -31,7 +47,27 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void delete(Product product) {
-        productRepository.delete(product);
+    public Product update(Long id, Product product) {
+
+        Optional<Product> productOptional = productRepository.findById(id);
+
+        if (productOptional.isPresent()) {
+            product.setId(productOptional.get().getId());
+            return productRepository.save(product);
+        } else {
+            throw new ProductNotFoundException();
+        }
+    }
+
+    @Override
+    public void delete(Long id) {
+
+        Optional<Product> productOptional = productRepository.findById(id);
+
+        if (productOptional.isPresent()) {
+            productRepository.delete(productOptional.get());
+        } else {
+            throw new ProductNotFoundException();
+        }
     }
 }
