@@ -33,7 +33,7 @@ http://localhost:8080/swagger-ui.html
 The link to the documentation on Heroku, also implemented through Swagger, is at the link below:
 
 ```
-https://product-api-matheus.herokuapp.com/swagger-ui.html
+https://products-api-matheus.herokuapp.com/swagger-ui.html
 ```
 
 The following prerequisites are necessary for the creation of the same developed project:
