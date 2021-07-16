@@ -1,6 +1,6 @@
-<h2>Developing a API REST product management system with Spring Boot</h2>
+<h2>Developing a REST API product management system with Spring Boot</h2>
 
-In this project, a small system for managing product in a company through a API REST, created with Spring Boot, will be developed.
+In this project, a small system for managing product in a company through a REST API, created with Spring Boot, will be developed.
 
 During the project, the following topics will be developed and addressed:
 

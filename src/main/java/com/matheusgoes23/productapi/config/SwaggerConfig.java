@@ -43,7 +43,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("API REST - Products")
+                .title("REST API - Products")
                 .description("API for product management.")
                 .version("1.0.0")
                 .license("Apache License Version 2.0")
@@ -57,6 +57,5 @@ public class SwaggerConfig {
         return new Contact("Matheus Goes Ribeiro",
                 "https://github.com/MatheusGoes23",
                 "matheusgoes23@gmail.com");
-
     }
 }
