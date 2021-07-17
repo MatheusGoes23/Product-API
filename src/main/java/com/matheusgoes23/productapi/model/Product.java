@@ -1,25 +1,29 @@
 package com.matheusgoes23.productapi.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "tb_product")
-public class Product extends RepresentationModel<Product> implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Product extends RepresentationModel<Product> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotBlank
     private String name;
@@ -28,7 +32,6 @@ public class Product extends RepresentationModel<Product> implements Serializabl
     private BigDecimal value;
 
     @NotBlank
-    @Lob
     private String description;
 
     @JsonFormat(pattern = "dd-MM-yyyy")

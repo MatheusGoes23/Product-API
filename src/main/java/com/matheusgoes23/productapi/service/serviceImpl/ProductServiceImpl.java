@@ -1,10 +1,13 @@
 package com.matheusgoes23.productapi.service.serviceImpl;
 
+import com.matheusgoes23.productapi.exception.ProductNoContentException;
 import com.matheusgoes23.productapi.exception.ProductNotFoundException;
 import com.matheusgoes23.productapi.model.Product;
 import com.matheusgoes23.productapi.repository.ProductRepository;
 import com.matheusgoes23.productapi.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,9 +20,9 @@ public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
 
     @Override
-    public List<Product> findAll() {
+    public Page<Product> findAll(Pageable pageable) {
 
-        List<Product> productList = productRepository.findAll();
+        Page<Product> productList = productRepository.findAll(pageable);
 
         if (productList.isEmpty()) {
             throw new ProductNotFoundException();
@@ -37,6 +40,18 @@ public class ProductServiceImpl implements ProductService {
             return productOptional.get();
         } else {
             throw new ProductNotFoundException();
+        }
+    }
+
+    @Override
+    public List<Product> findByName(String name) {
+
+        List<Product> productList = productRepository.findByName(name);
+
+        if (productList.isEmpty()) {
+            throw new ProductNotFoundException();
+        } else {
+            return productList;
         }
     }
 
@@ -66,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
         if (productOptional.isPresent()) {
             productRepository.delete(productOptional.get());
         } else {
-            throw new ProductNotFoundException();
+            throw new ProductNoContentException();
         }
     }
 }
